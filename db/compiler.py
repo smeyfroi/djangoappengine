@@ -453,30 +453,36 @@ class SQLCompiler(NonrelCompiler):
 
 class SQLInsertCompiler(NonrelInsertCompiler, SQLCompiler):
     @safe_call
-    def insert(self, data, return_id=False):
-        gae_data = {}
+    def insert(self, docs, return_id=False):
         opts = self.query.get_meta()
         unindexed_fields = get_model_indexes(self.query.model)['unindexed']
         unindexed_cols = [opts.get_field(name).column
                           for name in unindexed_fields]
-        kwds = {'unindexed_properties': unindexed_cols}
-        for column, value in data.items():
-            if column == opts.pk.column:
-                if isinstance(value, basestring):
-                    kwds['name'] = value
-                else:
-                    kwds['id'] = value
-            elif isinstance(value, (tuple, list)) and not len(value):
-                # gae does not store emty lists (and even does not allow passing empty
-                # lists to Entity.update) so skip them
-                continue
-            else:
-                gae_data[column] = value
 
-        entity = Entity(self.query.get_meta().db_table, **kwds)
-        entity.update(gae_data)
-        key = Put(entity)
-        return key.id_or_name()
+        entity_list = []
+        for data in docs:
+            gae_data = {}
+            kwds = {'unindexed_properties': unindexed_cols}
+            for column, value in data.items():
+                if column == opts.pk.column:
+                    if isinstance(value, basestring):
+                        kwds['name'] = value
+                    else:
+                        kwds['id'] = value
+                elif isinstance(value, (tuple, list)) and not len(value):
+                    # gae does not store emty lists (and even does not allow passing empty
+                    # lists to Entity.update) so skip them
+                    continue
+                else:
+                    gae_data[column] = value
+
+            entity = Entity(opts.db_table, **kwds)
+            entity.update(gae_data)
+            entity_list.append(entity)
+        keys = Put(entity_list)
+        if not isinstance(keys, list):
+            keys = [keys]
+        return keys[0].id_or_name()
 
 class SQLUpdateCompiler(NonrelUpdateCompiler, SQLCompiler):
     def execute_sql(self, result_type=MULTI):
