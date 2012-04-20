@@ -13,7 +13,6 @@ class DbKeyField(models.Field):
     __metaclass__ = models.SubfieldBase
 
     def __init__(self, *args, **kwargs):
-        kwargs['null'] = True
         kwargs['blank'] = True
 
         self.parent_key_attname = kwargs.pop('parent_key_name', None)
@@ -55,6 +54,9 @@ class DbKeyField(models.Field):
         if isinstance(value, Key):
             return value
         if isinstance(value, basestring):
+            if len(value) == 0:
+                return None
+
             try:
                 return Key(encoded=value)
             except datastore_errors.BadKeyError:
@@ -64,18 +66,17 @@ class DbKeyField(models.Field):
 
         raise ValidationError("DbKeyField does not accept %s" % type(value))
 
+    def get_prep_value(self, value):
+        if isinstance(value, AncestorKey):
+            return value
+        return self.to_python(value)
+
     def pre_save(self, model_instance, add):
         value = super(DbKeyField, self).pre_save(model_instance, add)
 
         if add and value is None and self.parent_key_attname is not None and hasattr(model_instance, self.parent_key_attname):
             stashed_parent = getattr(model_instance, self.parent_key_attname)
             value = Key.from_path(self.model._meta.db_table, 0, parent=stashed_parent)
-
-        return value
-
-    def get_prep_lookup(self, lookup_type, value):
-        if not isinstance(value, (Key, AncestorKey)):
-            raise ValueError(u"'%s' only accepts Key or ancestor objects, not %s" % (self.name, type(value)))
 
         return value
 
