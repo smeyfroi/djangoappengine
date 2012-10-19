@@ -1,37 +1,29 @@
 djangoappengine - Django App Engine backends (DB, email, etc.)
 ===============================================================
 
-Djangoappengine contains all App Engine backends for Django-nonrel, e.g. the database and email backends. In addition we provide a testapp_ which contains minimal settings for running Django-nonrel on App Engine. Use it as a starting point if you want to use App Engine as your database for Django-nonrel. We've also published some details in the `Django on App Engine`_ blog post.
+Djangoappengine contains all App Engine backends for Django-nonrel, e.g. the database and email backends. In addition we provide a testapp_ which contains minimal settings for running Django-nonrel on App Engine. Use it as a starting point if you want to use App Engine as your database for Django-nonrel.
 
-Take a look at the documentation below and subscribe_ to our `Django-nonrel blog`_ for the latest updates.
-
-.. raw:: html
-
-   <ul class="project-links">
-      <li><a href="#documentation">Documentation</a></li>
-      <li><a href="http://bitbucket.org/wkornewald/djangoappengine/src">Source</a></li>
-      <li><a href="http://bitbucket.org/wkornewald/djangoappengine/get/tip.zip">Download</a></li>
-      <li><a href="http://groups.google.com/group/django-non-relational">Discussion group</a></li>
-      <li><a href="/">Blog</a></li>
-   </ul>
+Take a look at the documentation below and visit our `Django-nonrel Group`_ for the latest updates and discussion.
 
 
 
-
-
-
-Installation
+Manual Installation
 ---------------------------------------
-Make sure you've installed the `App Engine SDK`_. On Windows simply use the default installation path. On Linux you can put it in /usr/local/google_appengine. On MacOS it should work if you put it in your Applications folder. Alternatively, on all systems you can add the google_appengine folder to your PATH (not PYTHONPATH) environment variable.
+Make sure you've installed the `App Engine SDK`_. On Windows simply use the default installation path. On Linux you can put it in /usr/local/google_appengine. On MacOS, put it in your Applications folder. Alternatively, on all systems you can add the google_appengine folder to your PATH (not PYTHONPATH) environment variable.
 
-Download the following zip files:
+Download or clone the following git repos:
 
-* `django-nonrel <http://bitbucket.org/wkornewald/django-nonrel/get/tip.zip>`__ (or `clone it <https://bitbucket.org/wkornewald/django-nonrel>`__)
-* `djangoappengine <http://bitbucket.org/wkornewald/djangoappengine/get/tip.zip>`__ (or `clone it <https://bitbucket.org/wkornewald/djangoappengine>`__)
-* `djangotoolbox <http://bitbucket.org/wkornewald/djangotoolbox/get/tip.zip>`__ (or `clone it <https://bitbucket.org/wkornewald/djangotoolbox>`__)
-* `django-autoload <http://bitbucket.org/twanschik/django-autoload/get/tip.zip>`__ (or `clone it <https://bitbucket.org/twanschik/django-autoload>`__)
-* `django-dbindexer <http://bitbucket.org/wkornewald/django-dbindexer/get/tip.zip>`__ (or `clone it <https://bitbucket.org/wkornewald/django-dbindexer>`__)
-* `django-testapp <http://bitbucket.org/wkornewald/django-testapp/get/tip.zip>`__ (or `clone it <https://bitbucket.org/wkornewald/django-testapp>`__)
+* https://github.com/django-nonrel/djangoappengine/tree/features/django-1.4
+* https://github.com/django-nonrel/djangotoolbox/tree/features/django-1.4
+* https://github.com/django-nonrel/django-dbindexer/tree/feature/django-1.4
+* https://github.com/django-nonrel/django-1.4/tree/1.4-nonrel
+* https://github.com/django-nonrel/django-testapp/tree/feature/django-1.4
+* http://bitbucket.org/twanschik/django-autoload
+
+In addition, the nonrel-permissions repo is required if you intend to use Django permissions:
+* https://github.com/django-nonrel/django-permission-backend-nonrel
+
+Note that the Django 1.3 codelines are outdated/abandoned. Use the 1.4 branches.
 
 Unzip everything.
 
@@ -54,6 +46,14 @@ That's it. Your project structure should look like this:
 * <project>/djangoappengine
 
 Alternatively, you can of course clone the respective repositories and create symbolic links instead of copying the folders to your project. That might be easier if you have a lot of projects and don't want to update each one manually.
+
+
+Automated Installer
+---------------------------------------
+
+An installer for nonrel on Google App Engine is available from `Sepero Hacker <http://seperohacker.blogspot.com/2012/04/installing-django-nonrel-easily.html>`_.
+
+
 
 Management commands
 ---------------------------------------------
@@ -238,23 +238,16 @@ Contribute
 ------------------------------------------------------
 If you want to help with implementing a missing feature or improving something please fork the source_ and send a pull request via BitBucket or a patch to the `discussion group`_.
 
-.. _djangotoolbox: http://www.allbuttonspressed.com/projects/djangotoolbox
-.. _`Django-nonrel blog`: /blog/django
-.. _testapp: http://bitbucket.org/wkornewald/django-testapp
-.. _django-nonrel: http://bitbucket.org/wkornewald/django-nonrel/wiki/Home
-.. _djangoappengine: http://bitbucket.org/wkornewald/djangoappengine
-.. _source: djangoappengine_
-.. _django-testapp: http://bitbucket.org/wkornewald/django-testapp
-.. _subscribe: http://feeds.feedburner.com/AllButtonsPressed
-.. _Django on App Engine: /blog/django/2010/01/Native-Django-on-App-Engine
+.. _testapp: http://github.com/django-nonrel/django-testapp
+.. _`Django-nonrel Group`: http://groups.google.com/group/django-non-relational
+.. _App Engine SDK: http://code.google.com/appengine/downloads.html
+
 .. _Link Shell Extension: http://schinagl.priv.at/nt/hardlinkshellext/hardlinkshellext.html
 .. _Mercurial: http://mercurial.selenic.com/
-.. _App Engine SDK: http://code.google.com/appengine/downloads.html
 .. _abstract base classes: http://docs.djangoproject.com/en/dev/topics/db/models/#abstract-base-classes
 .. _multi-table inheritance: http://docs.djangoproject.com/en/dev/topics/db/models/#multi-table-inheritance
 .. _multiple inheritance: http://docs.djangoproject.com/en/dev/topics/db/models/#multiple-inheritance
 .. _Managing per-field indexes on App Engine: http://www.allbuttonspressed.com/blog/django/2010/07/Managing-per-field-indexes-on-App-Engine
-.. _django-dbindexer: http://www.allbuttonspressed.com/projects/django-dbindexer
 .. _Google OpenID Sample Store: https://sites.google.com/site/oauthgoog/Home/openidsamplesite
 .. _django-filetransfers: http://www.allbuttonspressed.com/projects/django-filetransfers
 .. _Blobstore: http://code.google.com/appengine/docs/python/blobstore/
