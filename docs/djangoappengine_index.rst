@@ -66,7 +66,7 @@ With djangoappengine you get a few extra manage.py commands:
 * ``manage.py remote`` allows you to execute a command on the production database (e.g., ``manage.py remote shell`` or ``manage.py remote createsuperuser``)
 * ``manage.py deploy`` uploads your project to App Engine (use this instead of ``appcfg.py update``)
 
-Note that you can only use ``manage.py remote`` if your app is deployed and if you have enabled authentication via the Google Accounts API in your app settings in the App Engine Dashboard. Also, if you use a custom app.yaml you have to make sure that it contains the remote_api handler.
+Note that you can only use ``manage.py remote`` if your app is deployed and if you have enabled authentication via the Google Accounts API in your app settings in the App Engine Dashboard. Also, if you use a custom app.yaml you have to make sure that it contains the remote_api handler. Running this way executes the current code in your working directory against the remote datastore.
 
 Supported and unsupported  features
 -----------------------------------------------------------
@@ -84,10 +84,13 @@ The following Django field options have no effect on App Engine:
 * ``unique_for_month``
 * ``unique_for_year``
 
-Additionally djangotoolbox_ provides non-Django field types in ``djangotoolbox.fields`` which you can use on App Engine or other non-relational databases. These are
+Additionally djangotoolbox provides non-Django field types in ``djangotoolbox.fields`` which you can use on App Engine or other non-relational databases. These are
 
 * ``ListField``
 * ``BlobField``
+* ``SetField``
+* ``DictField``
+* ``EmbeddedModelField``
 
 The following App Engine properties can be emulated by using a ``CharField`` in Django-nonrel:
 
@@ -111,9 +114,9 @@ You can use the following field lookup types on all Fields except on ``TextField
 * ``__range`` inclusive on both boundaries
 * ``__startswith`` needs a composite index if combined with other filters 
 * ``__year``
-* ``__isnull`` requires django-dbindexer_ to work correctly on ``ForeignKey`` (you don't have to define any indexes for this to work)
+* ``__isnull`` requires django-dbindexer to work correctly on ``ForeignKey`` (you don't have to define any indexes for this to work)
 
-Using django-dbindexer_ all remaining lookup types will automatically work too!
+Using django-dbindexer all remaining lookup types will automatically work too!
 
 Additionally, you can use
 
@@ -124,7 +127,7 @@ Additionally, you can use
 * ``QuerySet.reverse()``
 * ...
 
-In all cases you have to keep general App Engine restrictions in mind.
+In all cases you have to keep general App Engine restrictions in mind, particularly the restrictions on inequality querying and sorting against multiple indexes.
 
 Model inheritance only works with `abstract base classes`_:
 
@@ -228,22 +231,19 @@ When you're running on the production server ``on_production_server`` is ``True`
 
 Zip packages
 ---------------------------------------------
-**Important:** Your instances will load slower when using zip packages because zipped Python files are not precompiled. Also, i18n doesn't work with zip packages. Zipping should only be a **last resort**! If you hit the 3000 files limit you should better try to reduce the number of files by, e.g., deleting unused packages from Django's "contrib" folder. Only when **nothing** (!) else works you should consider zip packages.
+**Important:** Your instances will load slower when using zip packages because zipped Python files are not precompiled. Also, i18n doesn't work with zip packages. Zipping should only be a **last resort**! If you hit the 10000 files limit you should better try to reduce the number of files by, e.g., deleting unused packages from Django's "contrib" folder. Only when **nothing** (!) else works you should consider zip packages.
 
-Since you can't upload more than 3000 files on App Engine you sometimes have to create zipped packages. Luckily, djangoappengine can help you with integrating those zip packages. Simply create a "zip-packages" directory in your project folder and move your zip packages there. They'll automatically get added to ``sys.path``.
+Since you can't upload more than 10000 files on App Engine you sometimes have to create zipped packages. Luckily, djangoappengine can help you with integrating those zip packages. Simply create a "zip-packages" directory in your project folder and move your zip packages there. They'll automatically get added to ``sys.path``.
 
 In order to create a zip package simply select a Python package (e.g., a Django app) and zip it. However, keep in mind that only Python modules can be loaded transparently from such a zip file. You can't easily access templates and JavaScript files from a zip package, for example. In order to be able to access the templates you should move the templates into your global "templates" folder within your project before zipping the Python package.
 
 Contribute
 ------------------------------------------------------
-If you want to help with implementing a missing feature or improving something please fork the source_ and send a pull request via BitBucket or a patch to the `discussion group`_.
+If you want to help with implementing a missing feature or improving something please fork the source and send a pull request via GitHub or a patch to the `Django-nonrel Group`_.
 
 .. _testapp: http://github.com/django-nonrel/django-testapp
 .. _`Django-nonrel Group`: http://groups.google.com/group/django-non-relational
 .. _App Engine SDK: http://code.google.com/appengine/downloads.html
-
-.. _Link Shell Extension: http://schinagl.priv.at/nt/hardlinkshellext/hardlinkshellext.html
-.. _Mercurial: http://mercurial.selenic.com/
 .. _abstract base classes: http://docs.djangoproject.com/en/dev/topics/db/models/#abstract-base-classes
 .. _multi-table inheritance: http://docs.djangoproject.com/en/dev/topics/db/models/#multi-table-inheritance
 .. _multiple inheritance: http://docs.djangoproject.com/en/dev/topics/db/models/#multiple-inheritance
@@ -251,4 +251,3 @@ If you want to help with implementing a missing feature or improving something p
 .. _Google OpenID Sample Store: https://sites.google.com/site/oauthgoog/Home/openidsamplesite
 .. _django-filetransfers: http://www.allbuttonspressed.com/projects/django-filetransfers
 .. _Blobstore: http://code.google.com/appengine/docs/python/blobstore/
-.. _discussion group: http://groups.google.com/group/django-non-relational
